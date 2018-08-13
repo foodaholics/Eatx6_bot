@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 
 import time
+import json
 from pprint import pprint
 
 import telepot
 from telepot.loop import MessageLoop
 
-from config import TOKEN
 from tasks.sample_task import SampleTask
 
 # 存放使用者的資料
 users = {}
 
+# 載入設定值
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
 # 取得 bot 控制權
-bot = telepot.Bot(TOKEN)
+bot = telepot.Bot(config['TOKEN'])
 
 # 載入功能
 tasks = [SampleTask(bot)]
