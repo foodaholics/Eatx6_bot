@@ -6,7 +6,7 @@ from tasks.base_task import BaseTask
 
 class SampleTask(BaseTask):
     def trig(self, user, msg):
-        return msg['text'] == '/test'
+        return 'text' in msg and msg['text'] == '/test'
 
     def main(self, user, msg):
         bot = self.bot
