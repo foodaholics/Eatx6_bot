@@ -8,6 +8,7 @@ from pprint import pprint
 import telepot
 from telepot.loop import MessageLoop
 
+from tasks.weather_task import WeatherTask
 from tasks.sample_task import SampleTask
 from modules.sample_module import SampleModule
 
@@ -18,7 +19,7 @@ with open(sys.path[0] + '/config.json', 'r') as f:
 bot = telepot.Bot(config['TOKEN'])
 
 # 載入功能
-tasks = [SampleTask(bot)]
+tasks = [SampleTask(bot),WeatherTask(bot)]
 # 載入模組
 modules = [SampleModule(bot)]
 
