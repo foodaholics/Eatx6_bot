@@ -21,6 +21,7 @@ class RestaurantSearch(BaseTask):
         self.key = 'AIzaSyB2R2Xlp4rAQZb6hDd22wcBuHnV1061BDA'
         self.location = '25.043387,121.535046'
         self.session_request = requests.session()
+        self.message_id = None
     
     # 取得地點的詳細資訊 -- 預設取得： 地址、名稱、評價、電話、營業時間
     def place_details(self, placeid='', fields='formatted_address,name,rating,formatted_phone_number,opening_hours', language='zh-TW', key=None):
@@ -136,10 +137,16 @@ class RestaurantSearch(BaseTask):
                 end += 3
             replyKeyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboards)
             bot.sendMessage(chat_id, 'restaurant list', reply_markup=replyKeyboard)
-
+            self.message_id = None
+            
         elif 'chat_instance' in msg and users[from_id]['status'] == '/eat':
             message = self.get_infomation(query_data)
-            bot.answerCallbackQuery(query_id)
-            bot.sendMessage(from_id, message, parse_mode='Markdown')
+            if self.message_id == None:
+                self.message_id = msg['message']['message_id'] + 1
+                bot.answerCallbackQuery(query_id)
+                bot.sendMessage(from_id, message, parse_mode='Markdown')
+            else:
+                bot.answerCallbackQuery(query_id)
+                bot.editMessageText((from_id, self.message_id), message, parse_mode='Markdown')
             # users[from_id]['status'] = None
         print("[RestaurantSearch] main")
