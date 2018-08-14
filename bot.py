@@ -29,7 +29,10 @@ def on_chat(msg):
 
     # 有新的使用者就新增到 users 裡
     if not chat_id in users:
-        users[chat_id] = {'chat_id': chat_id}
+        users[chat_id] = {
+            'chat_id': chat_id,
+            'status': None
+        }
 
     # 嘗試觸發每個功能
     for task in tasks:
