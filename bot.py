@@ -29,13 +29,13 @@ def on_chat(msg):
     # 除錯訊息
     pprint(msg)
 
-    # 取得使用者的 chat_id
+    # 取得使用者的資訊
     content_type, chat_type, chat_id = telepot.glance(msg)
+    from_id = msg['from']['id']
         
     # 有新的使用者就新增到 users 裡
-    if not chat_id in users:
-        users[chat_id] = {
-            'chat_id': chat_id,
+    if not from_id in users:
+        users[from_id] = {
             'status': None
         }
 
