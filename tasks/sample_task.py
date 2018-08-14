@@ -19,5 +19,5 @@ class SampleTask(BaseTask):
         # 取得使用者的 chat_id
         content_type, chat_type, chat_id = telepot.glance(msg)
 
-        bot.sendMessage(users[chat_id], msg['text'])
+        bot.sendMessage(chat_id, msg['text'])
         print("[SampleTask] main")
