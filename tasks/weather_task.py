@@ -12,14 +12,15 @@ class WeatherTask(BaseTask):
         self.isCall = False
         
     def trig(self, users, msg):
-        if 'location' in msg and users['status'] == "Weather" :
+        content_type, chat_type, chat_id = telepot.glance(msg)
+        if 'location' in msg and users[chat_id]['status'] == "Weather" :
             self.latitude = str(msg['location']['latitude'])
             self.longitude = str(msg['location']['longitude'])  
-            self.isCall =True          
+            self.isCall =True
             return True
 #            'location': {'latitude': 25.043579, 'longitude': 121.534496}
         elif 'text' in msg and msg['text'] == '/weather':
-            users['status'] = "Weather"
+            users[chat_id]['status'] = "Weather"
             return True 
         else:
             return False
@@ -33,10 +34,11 @@ class WeatherTask(BaseTask):
             bot.sendMessage(chat_id, a.getInfo())
             self.isCall = False
             a = None
-            users["status"] = None
+            users[chat_id]["status"] = None
             # print("send message")
         else:
             self.callWeather(users, msg)
+        # print(users)
             
         # print("SampleTask worked!")
         
@@ -44,7 +46,7 @@ class WeatherTask(BaseTask):
             bot = self.bot
             content_type, chat_type, chat_id = telepot.glance(msg)
             bot.sendMessage(chat_id, '請給我您現在的位置',
-                            reply_markup=ReplyKeyboardMarkup(
+                            reply_markup=ReplyKeyboardMarkup(resize_keyboard=True,one_time_keyboard=True,
                                 keyboard=[
                                     [KeyboardButton(text="送出位置",request_location=True)]
                                 ]
