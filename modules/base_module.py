@@ -2,12 +2,12 @@
 
 import telepot
 
-class BaseTask:
+class BaseModule:
     def __init__(self, bot:telepot.Bot):
         self.bot = bot
 
-    def trig(self, users, msg):
-        return False
+    def setup(self):
+        bot = self.bot
 
-    def main(self, users, msg):
+    def loop(self):
         bot = self.bot
