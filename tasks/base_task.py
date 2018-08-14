@@ -6,8 +6,8 @@ class BaseTask:
     def __init__(self, bot:telepot.Bot):
         self.bot = bot
 
-    def trig(self, user, msg):
+    def trig(self, users, msg):
         return False
 
-    def main(self, user, msg):
+    def main(self, users, msg):
         bot = self.bot

@@ -5,12 +5,19 @@ import telepot
 from tasks.base_task import BaseTask
 
 class SampleTask(BaseTask):
-    def trig(self, user, msg):
-        return 'text' in msg and msg['text'] == '/test'
-
-    def main(self, user, msg):
+    def trig(self, users, msg):
         bot = self.bot
 
+        # 取得使用者的 chat_id
+        content_type, chat_type, chat_id = telepot.glance(msg)
+        
+        return 'text' in msg and msg['text'] == '/test'
 
-        bot.sendMessage(user['chat_id'], msg['text'])
-        print("SampleTask worked!")
+    def main(self, users, msg):
+        bot = self.bot
+
+        # 取得使用者的 chat_id
+        content_type, chat_type, chat_id = telepot.glance(msg)
+
+        bot.sendMessage(users[chat_id], msg['text'])
+        print("[SampleTask] main")
