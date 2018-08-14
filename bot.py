@@ -29,7 +29,10 @@ def on_chat(msg):
 
     # 有新的使用者就新增到 users 裡
     if not chat_id in users:
-        users[chat_id] = {'chat_id': chat_id}
+        users[chat_id] = {
+            'chat_id': chat_id,
+            'status': None
+        }
 
     # 嘗試觸發每個功能
     for task in tasks:
@@ -37,8 +40,19 @@ def on_chat(msg):
             task.main(users[chat_id], msg)
             break
 
-# 接收使用者對 bot 的輸入並以 on_chat 函式處理
-MessageLoop(bot, on_chat).run_as_thread()
+def on_callback_query(msg):
+    query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+
+    pprint(msg)
+
+    # 嘗試觸發每個功能
+    for task in tasks:
+        if task.trig(users[from_id], msg):
+            task.main(users[from_id], msg)
+            break
+
+# 接收使用者對 bot 的輸入並以相關函式處理
+MessageLoop(bot, {'on_chat': on_chat, 'on_callback_query': on_callback_query}).run_as_thread()
 
 print("我開始運作啦！")
 
