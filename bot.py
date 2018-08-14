@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import time
 import json
 from pprint import pprint
@@ -10,7 +11,7 @@ from telepot.loop import MessageLoop
 from tasks.sample_task import SampleTask
 
 # 載入設定值
-with open('config.json', 'r') as f:
+with open(sys.path[0] + '/config.json', 'r') as f:
     config = json.load(f)
 # 取得 bot 控制權
 bot = telepot.Bot(config['TOKEN'])
