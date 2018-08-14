@@ -9,15 +9,21 @@ class SampleTask(BaseTask):
         bot = self.bot
 
         # 取得使用者的 chat_id
-        content_type, chat_type, chat_id = telepot.glance(msg)
-        
+        try:
+            content_type, chat_type, chat_id = telepot.glance(msg)
+        except:
+            query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+
         return 'text' in msg and msg['text'] == '/test'
 
     def main(self, users, msg):
         bot = self.bot
 
         # 取得使用者的 chat_id
-        content_type, chat_type, chat_id = telepot.glance(msg)
+        try:
+            content_type, chat_type, chat_id = telepot.glance(msg)
+        except:
+            query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
 
         bot.sendMessage(chat_id, msg['text'])
         print("[SampleTask] main")
