@@ -34,6 +34,6 @@ class WeatherCrawler:
                     start = data.find(i)
                     end = data.find(j)
                     self.info += data[start:end] + '\n'
-        print(self.info)
+        # print(self.info)
     def getInfo(self):
         return self.info

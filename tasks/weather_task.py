@@ -34,11 +34,11 @@ class WeatherTask(BaseTask):
             self.isCall = False
             a = None
             users["status"] = None
-            print("send message")
+            # print("send message")
         else:
             self.callWeather(users, msg)
             
-        print("SampleTask worked!")
+        # print("SampleTask worked!")
         
     def callWeather(self,users, msg):
             bot = self.bot
@@ -46,8 +46,7 @@ class WeatherTask(BaseTask):
             bot.sendMessage(chat_id, '請給我您現在的位置',
                             reply_markup=ReplyKeyboardMarkup(
                                 keyboard=[
-                                    [KeyboardButton(text="送出位置",request_location=True),
-                                    KeyboardButton(text="送出電話",request_contact=True)]
+                                    [KeyboardButton(text="送出位置",request_location=True)]
                                 ]
                             ))
     
