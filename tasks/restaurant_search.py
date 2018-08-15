@@ -115,14 +115,14 @@ class RestaurantSearch(BaseTask):
         if 'text' in msg and msg['text'] == '/eat' and users[from_id]['status'] == '/eat':
             replyKeyboard = ReplyKeyboardMarkup(keyboard=
             [
-                [KeyboardButton(text='send location', request_location=True)]
+                [KeyboardButton(text='送啦', request_location=True)]
             ], 
             resize_keyboard=True, one_time_keyboard=True)
-            bot.sendMessage(chat_id, 'give me your location', reply_markup=replyKeyboard)         
+            bot.sendMessage(chat_id, '請把你的位置發送給我 😬', reply_markup=replyKeyboard)         
 
         elif 'location' in msg and users[from_id]['status'] == '/eat':
             location = str(msg['location']['latitude']) + ',' + str(msg['location']['longitude'])
-            bot.sendMessage(from_id, 'Pleace wait~')
+            bot.sendMessage(from_id, '請稍候 😣😣😣')
             places_result = self.get_store_names_and_placeIDs(self.near_by_search(location=location))
             tmp = [{'place_id': i, 'name': places_result[i]}for i in places_result]
             inline_keyboards = []
@@ -136,7 +136,7 @@ class RestaurantSearch(BaseTask):
                 start = end
                 end += 3
             replyKeyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboards)
-            bot.sendMessage(chat_id, 'restaurant list', reply_markup=replyKeyboard)
+            bot.sendMessage(chat_id, '這些是我找到的餐廳列表', reply_markup=replyKeyboard)
             self.message_id = None
 
         elif 'chat_instance' in msg and users[from_id]['status'] == '/eat':
