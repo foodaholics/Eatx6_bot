@@ -138,15 +138,15 @@ class RestaurantSearch(BaseTask):
             replyKeyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboards)
             bot.sendMessage(chat_id, 'restaurant list', reply_markup=replyKeyboard)
             self.message_id = None
-            
+
         elif 'chat_instance' in msg and users[from_id]['status'] == '/eat':
             message = self.get_infomation(query_data)
             if self.message_id == None:
                 self.message_id = msg['message']['message_id'] + 1
                 bot.answerCallbackQuery(query_id)
-                bot.sendMessage(from_id, message, parse_mode='Markdown')
+                bot.sendMessage(from_id, message, parse_mode='Markdown', disable_web_page_preview=True)
             else:
                 bot.answerCallbackQuery(query_id)
-                bot.editMessageText((from_id, self.message_id), message, parse_mode='Markdown')
+                bot.editMessageText((from_id, self.message_id), message, parse_mode='Markdown', disable_web_page_preview=True)
             # users[from_id]['status'] = None
         print("[RestaurantSearch] main")
