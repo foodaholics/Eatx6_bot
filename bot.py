@@ -10,17 +10,19 @@ from telepot.loop import MessageLoop
 
 from tasks.sample_task import SampleTask
 from modules.sample_module import SampleModule
+from modules.coupon_module import CouponModule
 
 # 載入設定值
 with open(sys.path[0] + '/config.json', 'r') as f:
     config = json.load(f)
 # 取得 bot 控制權
 bot = telepot.Bot(config['TOKEN'])
+# bot = telepot.Bot('')
 
 # 載入功能
 tasks = [SampleTask(bot)]
 # 載入模組
-modules = [SampleModule(bot)]
+modules = [SampleModule(bot), CouponModule(bot)]
 
 # 存放使用者的資料
 users = {}
