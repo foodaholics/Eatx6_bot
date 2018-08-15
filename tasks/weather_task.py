@@ -12,7 +12,11 @@ class WeatherTask(BaseTask):
         self.isCall = False
         
     def trig(self, users, msg):
-        content_type, chat_type, chat_id = telepot.glance(msg)
+        try:
+            content_type, chat_type, chat_id = telepot.glance(msg)
+        except:
+            query_id, chat_id, query_data = telepot.glance(msg, flavor='callback_query')
+
         if 'location' in msg and users[chat_id]['status'] == "Weather" :
             self.latitude = str(msg['location']['latitude'])
             self.longitude = str(msg['location']['longitude'])  
@@ -27,7 +31,14 @@ class WeatherTask(BaseTask):
    
     def main(self, users, msg):
         bot = self.bot
-        content_type, chat_type, chat_id = telepot.glance(msg)
+
+        print("[WeatherTask] main")
+
+        try:
+            content_type, chat_type, chat_id = telepot.glance(msg)
+        except:
+            query_id, chat_id, query_data = telepot.glance(msg, flavor='callback_query')
+
         if self.isCall:
             bot.sendMessage(chat_id, "請等等...")
             a = WeatherCrawler(self.latitude, self.longitude)
