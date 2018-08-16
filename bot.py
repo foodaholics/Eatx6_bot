@@ -70,9 +70,11 @@ def main():
 
     print("我開始運作啦！")
 
+    # 執行模組的 setup()
     for module in modules:
         module.setup()
 
+    # 每隔 10 秒觸發模組的 loop()
     while True:
         for module in modules:
             module.loop()
