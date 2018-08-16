@@ -33,11 +33,10 @@ def on_chat(msg):
 
     # 取得使用者的資訊
     content_type, chat_type, chat_id = telepot.glance(msg)
-    from_id = msg['from']['id']
         
     # 有新的使用者就新增到 users 裡
-    if not from_id in users:
-        users[from_id] = {
+    if not chat_id in users:
+        users[chat_id] = {
             'status': None,
             'data': {}
         }
@@ -53,7 +52,7 @@ def on_callback_query(msg):
     pprint(msg)
 
     # 取得使用者的 from_id
-    query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+    query_id, chat_id, query_data = telepot.glance(msg, flavor='callback_query')
 
     # 嘗試觸發每個功能
     for task in tasks:

@@ -13,7 +13,7 @@ class SampleTask(BaseTask):
         try:
             content_type, chat_type, chat_id = telepot.glance(msg)
         except:
-            query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+            query_id, chat_id, query_data = telepot.glance(msg, flavor='callback_query')
 
 
         # TODO: 判斷是否觸發
@@ -31,7 +31,7 @@ class SampleTask(BaseTask):
         try:
             content_type, chat_type, chat_id = telepot.glance(msg)
         except:
-            query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+            query_id, chat_id, query_data = telepot.glance(msg, flavor='callback_query')
 
         # TODO: 實作實際的功能
         bot.sendMessage(chat_id, "我現在可以幫你( ºωº )\n\n/weather - 查天氣，畢竟吃貨出門是需要看天氣的😇\n/eat - 找吃的，如果你不想思考附近可以吃什麼🤤")

@@ -89,30 +89,28 @@ class RestaurantSearch(BaseTask):
         # 取得使用者的 chat_id        
         try:
             content_type, chat_type, chat_id = telepot.glance(msg)
-            from_id = msg['from']['id']
         except:
-            query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+            query_id, chat_id, query_data = telepot.glance(msg, flavor='callback_query')
 
         if 'text' in msg and msg['text'] == '/eat':
-            users[from_id]['status'] = '/eat'
+            users[chat_id]['status'] = '/eat'
             return True
-        elif users[from_id]['status'] == '/eat' and 'location' in msg:
+        elif users[chat_id]['status'] == '/eat' and 'location' in msg:
             return True
-        elif users[from_id]['status'] == '/eat' and 'chat_instance' in msg:
+        elif users[chat_id]['status'] == '/eat' and 'chat_instance' in msg:
             return True
         else:
-            users[from_id]['status'] = None
+            users[chat_id]['status'] = None
             return False
     def main(self, users, msg):
         bot = self.bot
         # 取得使用者的 chat_id
         try:
             content_type, chat_type, chat_id = telepot.glance(msg)
-            from_id = msg['from']['id']
         except:
-            query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
+            query_id, chat_id, query_data = telepot.glance(msg, flavor='callback_query')
         
-        if 'text' in msg and msg['text'] == '/eat' and users[from_id]['status'] == '/eat':
+        if 'text' in msg and msg['text'] == '/eat' and users[chat_id]['status'] == '/eat':
             replyKeyboard = ReplyKeyboardMarkup(keyboard=
             [
                 [KeyboardButton(text='送啦', request_location=True)]
@@ -120,9 +118,9 @@ class RestaurantSearch(BaseTask):
             resize_keyboard=True, one_time_keyboard=True)
             bot.sendMessage(chat_id, '請把你的位置發送給我 😬', reply_markup=replyKeyboard)         
 
-        elif 'location' in msg and users[from_id]['status'] == '/eat':
+        elif 'location' in msg and users[chat_id]['status'] == '/eat':
             location = str(msg['location']['latitude']) + ',' + str(msg['location']['longitude'])
-            bot.sendMessage(from_id, '請稍候 😣😣😣')
+            bot.sendMessage(chat_id, '請稍候 😣😣😣')
             places_result = self.get_store_names_and_placeIDs(self.near_by_search(location=location))
             tmp = [{'place_id': i, 'name': places_result[i]}for i in places_result]
             inline_keyboards = []
@@ -139,14 +137,14 @@ class RestaurantSearch(BaseTask):
             bot.sendMessage(chat_id, '這些是我找到的餐廳列表', reply_markup=replyKeyboard)
             self.message_id = None
 
-        elif 'chat_instance' in msg and users[from_id]['status'] == '/eat':
+        elif 'chat_instance' in msg and users[chat_id]['status'] == '/eat':
             message = self.get_infomation(query_data)
             if self.message_id == None:
                 self.message_id = msg['message']['message_id'] + 1
                 bot.answerCallbackQuery(query_id)
-                bot.sendMessage(from_id, message, parse_mode='Markdown', disable_web_page_preview=True)
+                bot.sendMessage(chat_id, message, parse_mode='Markdown', disable_web_page_preview=True)
             else:
                 bot.answerCallbackQuery(query_id)
-                bot.editMessageText((from_id, self.message_id), message, parse_mode='Markdown', disable_web_page_preview=True)
-            # users[from_id]['status'] = None
+                bot.editMessageText((chat_id, self.message_id), message, parse_mode='Markdown', disable_web_page_preview=True)
+            # users[chat_id]['status'] = None
         print("[RestaurantSearch] main")
