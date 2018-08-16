@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-from time import *
-from pprint import pprint
+from datetime import date
 
 import requests
 import telepot
@@ -13,11 +12,10 @@ from telepot.namedtuple import (
     InlineKeyboardButton
 )
 
-from datetime import *
 from tasks.base_task import BaseTask
 
 class RestaurantTask(BaseTask):
-    def __init__(self, bot: telepot.Bot):
+    def __init__(self, bot:telepot.Bot):
         super().__init__(bot)
         self.key = 'AIzaSyB2R2Xlp4rAQZb6hDd22wcBuHnV1061BDA'
         self.location = '25.043387,121.535046'
@@ -77,12 +75,6 @@ class RestaurantTask(BaseTask):
             result += '評價: ' + str(details['rating']) + '\n'
         result += '[在地圖上顯示](' + mpaUrl + ')'
         return result
-        
-
-    def test(self):
-        places_result = self.get_store_names_and_placeIDs()
-        tmp = [{i: places_result[i]}for i in places_result]
-        self.get_infomation('ChIJs9HOcHypQjQRlMPKm2JfIjw')
 
     def trig(self, users, msg):
         bot = self.bot
@@ -103,6 +95,7 @@ class RestaurantTask(BaseTask):
         else:
             users[chat_id]['status'] = None
             return False
+
     def main(self, users, msg):
         bot = self.bot
         # 取得使用者的 chat_id
