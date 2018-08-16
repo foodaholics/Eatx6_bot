@@ -15,7 +15,7 @@ from telepot.namedtuple import (
 from datetime import *
 from tasks.base_task import BaseTask
 
-class RestaurantSearch(BaseTask):
+class RestaurantTask(BaseTask):
     def __init__(self, bot: telepot.Bot):
         super().__init__(bot)
         self.key = 'AIzaSyB2R2Xlp4rAQZb6hDd22wcBuHnV1061BDA'

@@ -10,7 +10,7 @@ from telepot.loop import MessageLoop
 
 from tasks.weather_task import WeatherTask
 from tasks.sample_task import SampleTask
-from tasks.restaurant_search import RestaurantSearch
+from tasks.restaurant_task import RestaurantTask
 from modules.sample_module import SampleModule
 
 # 載入設定值
@@ -20,7 +20,7 @@ with open(sys.path[0] + '/config.json', 'r') as f:
 bot = telepot.Bot(config['TOKEN'])
 
 # 載入功能
-tasks = [SampleTask(bot), WeatherTask(bot), RestaurantSearch(bot)]
+tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot)]
 # 載入模組
 modules = [SampleModule(bot)]
 
