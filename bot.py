@@ -17,10 +17,10 @@ from modules.sample_module import SampleModule
 with open(sys.path[0] + '/config.json', 'r') as f:
     config = json.load(f)
 # 取得 bot 控制權
-bot = telepot.Bot(config['TOKEN'])
+bot = telepot.Bot(config['BOT_TOKEN'])
 
 # 載入功能
-tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot)]
+tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot, config['PLACE_KEY'])]
 # 載入模組
 modules = [SampleModule(bot)]
 

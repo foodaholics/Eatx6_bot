@@ -15,9 +15,9 @@ from telepot.namedtuple import (
 from tasks.base_task import BaseTask
 
 class RestaurantTask(BaseTask):
-    def __init__(self, bot:telepot.Bot):
+    def __init__(self, bot:telepot.Bot, key):
         super().__init__(bot)
-        self.key = 'AIzaSyB2R2Xlp4rAQZb6hDd22wcBuHnV1061BDA'
+        self.key = key
         self.location = '25.043387,121.535046'
         self.session_request = requests.session()
         self.message_id = None
