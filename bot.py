@@ -38,7 +38,8 @@ def on_chat(msg):
     # 有新的使用者就新增到 users 裡
     if not from_id in users:
         users[from_id] = {
-            'status': None
+            'status': None,
+            'data': {}
         }
 
     # 嘗試觸發每個功能
