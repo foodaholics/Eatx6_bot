@@ -1,0 +1,4 @@
+telepot
+requests
+bs4
+schedule
