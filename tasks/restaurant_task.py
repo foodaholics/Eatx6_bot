@@ -92,8 +92,7 @@ class RestaurantTask(BaseTask):
             return True
         elif users[chat_id]['status'] == '/eat' and 'chat_instance' in msg:
             return True
-        else:
-            users[chat_id]['status'] = None
+        elif 'text' in msg and msg['text'] != '/eat' and users[chat_id]['status'] == '/eat':
             return False
 
     def main(self, users, msg):
