@@ -140,4 +140,4 @@ class RestaurantTask(BaseTask):
                 bot.answerCallbackQuery(query_id)
                 bot.editMessageText((chat_id, self.message_id), message, parse_mode='Markdown', disable_web_page_preview=True)
             # users[chat_id]['status'] = None
-        print("[RestaurantSearch] main")
+        print("[RestaurantTask] main")
