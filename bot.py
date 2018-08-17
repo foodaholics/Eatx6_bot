@@ -20,13 +20,16 @@ with open(sys.path[0] + '/config.json', 'r') as f:
 # 取得 bot 控制權
 bot = telepot.Bot(config['BOT_TOKEN'])
 
+# 存放使用者的資料
+users = {}
+# 功能與模組間的全域變數
+data = {}
+
 # 載入功能
 tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot, config['PLACE_KEY'])]
 # 載入模組
 modules = [SampleModule(bot), CouponModule(bot)]
 
-# 存放使用者的資料
-users = {}
 
 def on_chat(msg):
     # 除錯訊息
@@ -38,8 +41,7 @@ def on_chat(msg):
     # 有新的使用者就新增到 users 裡
     if not chat_id in users:
         users[chat_id] = {
-            'status': None,
-            'data': {}
+            'status': None
         }
 
     # 嘗試觸發每個功能
