@@ -12,6 +12,7 @@ from tasks.weather_task import WeatherTask
 from tasks.sample_task import SampleTask
 from tasks.restaurant_task import RestaurantTask
 from modules.sample_module import SampleModule
+from modules.coupon_module import CouponModule
 
 # 載入設定值
 with open(sys.path[0] + '/config.json', 'r') as f:
@@ -22,7 +23,7 @@ bot = telepot.Bot(config['BOT_TOKEN'])
 # 載入功能
 tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot, config['PLACE_KEY'])]
 # 載入模組
-modules = [SampleModule(bot)]
+modules = [SampleModule(bot), CouponModule(bot)]
 
 # 存放使用者的資料
 users = {}
