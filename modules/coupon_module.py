@@ -8,75 +8,90 @@ from modules.KFCSpider import KFCSpider
 from modules.ticket import Ticket
 
 class CouponModule(BaseModule):
-    def __init__(self,bot):
-        super().__init__(bot)
+    def __init__(self,bot,data:dict):
+        super().__init__(bot,data)
         
         self.tickets = Ticket()
-        self.KFCOldData = {}
-        self.BKOldData = {}
-        self.KFCCoupons = None
-        self.BKCoupons = None
 
-        self.KFCnewKeys = None
-        self.KFClastDayCoupons = None
-        self.BKnewKeys = None
-        self.BKlastDayCoupons = None
-
-        self.subscribers = {"KFC":["466175780","648984791"],"BK":["466175780","648984791"]}
-
+    # 取得新coupon與即將到期coupon
     def update(self):
-        self.KFCnewKeys = self.tickets.getNewCoupon(self.KFCOldData,self.KFCCoupons)
-        self.KFClastDayCoupons = self.tickets.getLastDayCoupon(self.KFCCoupons)
-        self.BKnewKeys = self.tickets.getNewCoupon(self.BKOldData,self.BKCoupons)
-        self.BKlastDayCoupons = self.tickets.getLastDayCoupon(self.BKCoupons)
+        print("UPDATE")
+        KFC = self.data["stores"]["KFC"]
+        BK = self.data["stores"]["BK"]
+        KFC["newKeys"] = self.tickets.getNewCoupon(KFC["oldData"],KFC["coupons"])
+        KFC["lastDayKeys"] = self.tickets.getLastDayCoupon(KFC["coupons"])
+        BK["newKeys"] = self.tickets.getNewCoupon(BK["oldData"],BK["coupons"])
+        BK["lastDayKeys"] = self.tickets.getLastDayCoupon(BK["coupons"])
 
+    # 傳送照片   
     def botSendPhoto(self,bot,couponImg,ID):
         for img in couponImg:
             bot.sendPhoto(ID,img)
 
-    def notify(self,subscribers):
+    #跑迴圈來發送給每一個訂閱者
+    def notify(self):
+        print("NODIFY")
         bot = self.bot
-        for ID in subscribers["KFC"]:
-            if len(self.KFCnewKeys) != 0:
-                for key in self.KFCnewKeys:
-                    bot.sendMessage(ID,self.tickets.printCoupon(key,self.KFCCoupons))
-                    #bot.sendPhoto(ID,self.KFCCoupons[key]["img"])
-                    self.botSendPhoto(bot,self.KFCCoupons[key]["img"],ID)
+        KFC = self.data["stores"]["KFC"]
+        BK = self.data["stores"]["BK"]
+        
+        for ID in KFC["subscribers"]:
+            if len(KFC["newKeys"]) != 0:
+                for key in KFC["newKeys"]:
+                    bot.sendMessage(ID,self.tickets.printCoupon(key,KFC["coupons"]))
+                    self.botSendPhoto(bot,KFC["coupons"][key]["img"],ID)
+        
+            if len(KFC["lastDayKeys"]) != 0:
+                for key in KFC["lastDayKeys"]:
+                    bot.sendMessage(ID,self.tickets.printLastDayCoupon(key,KFC["coupons"]))
+                    self.botSendPhoto(bot,KFC["coupons"][key]["img"],ID)
+        for ID in BK["subscribers"]:
+            if len(BK["newKeys"]) != 0:
+                for key in BK["newKeys"]:
+                    bot.sendMessage(ID,self.tickets.printCoupon(key,BK["coupons"]))
+                    self.botSendPhoto(bot,BK["coupons"][key]["img"],ID)
+                    if len(BK["lastDayKeys"]) != 0:
+                        for key in BK["lastDayKeys"]:
+                            bot.sendMessage(ID,self.tickets.printLastDayCoupon(key,BK["coupons"]))
+                            self.botSendPhoto(bot,BK["coupons"][key]["img"],ID)
 
-            if len(self.KFClastDayCoupons) != 0:
-                for key in self.KFClastDayCoupons:
-                    bot.sendMessage(ID,self.tickets.printLastDayCoupon(key,self.KFCCoupons))
-                    #bot.sendPhoto(ID,self.KFCCoupons[key]["img"])
-                    self.botSendPhoto(bot,self.KFCCoupons[key]["img"],ID)
-        for ID in subscribers["BK"]:
-            if len(self.BKnewKeys) != 0:
-                for key in self.BKnewKeys:
-                    bot.sendMessage(ID,self.tickets.printCoupon(key,self.BKCoupons))
-                    #bot.sendPhoto(ID,self.BKCoupons[key]["img"])
-                    self.botSendPhoto(bot,self.BKCoupons[key]["img"],ID)
-            if len(self.BKlastDayCoupons) != 0:
-                for key in self.BKlastDayCoupons:
-                    bot.sendMessage(ID,self.tickets.printLastDayCoupon(key,self.BKCoupons))
-                    #bot.sendPhoto(ID,self.BKCoupons[key]["img"])
-                    self.botSendPhoto(bot,self.BKCoupons[key]["img"],ID)
-
-    def execute(self,subscribers):
+    # 執行update跟notify，處理完後把今天抓的資料放進oldData
+    def execute(self):
+        stores = self.data["stores"]
+        stores["KFC"]["coupons"] = self.data["stores"]["KFC"]["spider"].get_coupons()
+        stores["BK"]["coupons"] = self.data["stores"]["BK"]["spider"].get_coupons()
         self.update()
-        self.notify(subscribers) 
-        self.KFCOldData = self.KFCCoupons
-        self.BKOldData = self.BKCoupons
+        self.notify() 
+        self.data["stores"]["KFC"]["oldData"] = self.data["stores"]["KFC"]["coupons"]
+        self.data["stores"]["BK"]["oldData"] = self.data["stores"]["BK"]["coupons"]
+        #print("BK old data",self.data["stores"]["BK"]["oldData"])
+        print("execute")
 
     def setup(self):
-        self.KFCCoupons = KFCSpider().get_coupons()
-        self.BKCoupons = BKSpider().get_coupons()    
+        
+        stores = {"KFC":{"subscribers":["466175780","648984791"],
+                "spider":KFCSpider(),
+                "coupons":{},
+                "newKeys":[],
+                "lastDayKeys":[],
+                "oldData":{}},
+        "BK":{"subscribers":["466175780","648984791"],
+            "spider":BKSpider(),
+            "coupons":{},
+            "newKeys":[],
+            "lastDayKeys":[],
+            "oldData":{}}
+        }
+        self.data["stores"] = stores
+        
+        stores["KFC"]["coupons"] = self.data["stores"]["KFC"]["spider"].get_coupons()
+        stores["BK"]["coupons"] = self.data["stores"]["BK"]["spider"].get_coupons()
+        #print("BK old data",self.data["stores"]["BK"]["oldData"])
+
         print("[CouponModule] setup")
-        schedule.every().day.at("10:22").do(self.execute,self.subscribers)
-        #schedule.every().day.at("10:15").do(self.execute,self.subscribers)
-        
-    
-        
-
-
+        schedule.every().day.at("16:40").do(self.execute)
+        #schedule.every(2).minutes.do(self.execute)
+                
     def loop(self):
         bot = self.bot
         schedule.run_pending()

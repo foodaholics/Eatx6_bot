@@ -28,7 +28,7 @@ data = {}
 # 載入功能
 tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot, config['PLACE_KEY'])]
 # 載入模組
-modules = [SampleModule(bot), CouponModule(bot)]
+modules = [SampleModule(bot), CouponModule(bot,data)]
 
 
 def on_chat(msg):
