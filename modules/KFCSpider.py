@@ -90,4 +90,4 @@ class KFCSpider:
 
                     newData[name] = {'desc': descText, 'img': imgList, 'startDate': startDate, 'endDate': endDate}
 
-        return(newData)
+        return newData
