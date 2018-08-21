@@ -8,9 +8,11 @@ from pprint import pprint
 import telepot
 from telepot.loop import MessageLoop
 
+from tasks.remind_task import RemindTask
 from tasks.weather_task import WeatherTask
 from tasks.sample_task import SampleTask
 from modules.sample_module import SampleModule
+from modules.remind_module import RemindModule
 
 # 載入設定值
 with open(sys.path[0] + '/config.json', 'r') as f:
@@ -19,7 +21,7 @@ with open(sys.path[0] + '/config.json', 'r') as f:
 bot = telepot.Bot(config['TOKEN'])
 
 # 載入功能
-tasks = [SampleTask(bot),WeatherTask(bot)]
+tasks = [WeatherTask(bot),RemindTask(bot), SampleTask(bot)]
 # 載入模組
 modules = [SampleModule(bot)]
 
