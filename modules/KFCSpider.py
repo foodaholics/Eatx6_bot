@@ -89,5 +89,14 @@ class KFCSpider:
                         # print(imgList) #get 圖片--okokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokokok
 
                     newData[name] = {'desc': descText, 'img': imgList, 'startDate': startDate, 'endDate': endDate}
-
+        # 清除無期限
+        delList = []
+        for i in newData:
+            a = newData[i]['startDate']
+            if a == '無期限':
+                delList.append(i)
+        
+        for i in delList:
+            del newData[i]
+        
         return newData

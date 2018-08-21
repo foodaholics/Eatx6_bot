@@ -12,6 +12,7 @@ from tasks.weather_task import WeatherTask
 from tasks.sample_task import SampleTask
 from tasks.restaurant_task import RestaurantTask
 from tasks.viewcoupon_task import ViewCouponTask
+from tasks.subscribe_task import SubscribeTask
 from modules.sample_module import SampleModule
 from modules.coupon_module import CouponModule
 
@@ -27,7 +28,7 @@ users = {}
 data = {}
 
 # 載入功能
-tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot, config['PLACE_KEY']), ViewCouponTask(bot, data)]
+tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot, config['PLACE_KEY']), SubscribeTask(bot, data), ViewCouponTask(bot, data)]
 # 載入模組
 modules = [SampleModule(bot), CouponModule(bot,data)]
 
