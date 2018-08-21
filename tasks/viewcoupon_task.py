@@ -17,7 +17,7 @@ class ViewCouponTask(BaseTask):
 
 
         # TODO: 判斷是否觸發
-        result = 'text' in msg and msg['text'] in ['/viewcoupon']
+        result = 'text' in msg and msg['text'] in ['/coupon']
 
 
         # 回傳是否觸發的結果
