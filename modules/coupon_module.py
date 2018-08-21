@@ -5,6 +5,10 @@ from modules.base_module import BaseModule
 import schedule
 from modules.BKSpider import BKSpider
 from modules.KFCSpider import KFCSpider
+from modules.MosSpider import MosSpider
+from modules.McDSpider import McDSpider
+from modules.twentyOneCenturySpider import twentyOneCenturySpider
+from modules.TKKSpider import TKKSpider
 from modules.ticket import Ticket
 
 class CouponModule(BaseModule):
@@ -16,81 +20,94 @@ class CouponModule(BaseModule):
     # 取得新coupon與即將到期coupon
     def update(self):
         print("UPDATE")
-        KFC = self.data["stores"]["KFC"]
-        BK = self.data["stores"]["BK"]
-        KFC["newKeys"] = self.tickets.getNewCoupon(KFC["oldData"],KFC["coupons"])
-        KFC["lastDayKeys"] = self.tickets.getLastDayCoupon(KFC["coupons"])
-        BK["newKeys"] = self.tickets.getNewCoupon(BK["oldData"],BK["coupons"])
-        BK["lastDayKeys"] = self.tickets.getLastDayCoupon(BK["coupons"])
+        for restaurant in self.data["stores"].values():
+            # 拿各家店裡的新coupon
+            restaurant["newKeys"] = self.tickets.getNewCoupon(restaurant["oldData"],restaurant["coupons"])
+            # 拿各家店裡即將到期的coupon
+            restaurant["lastDayKeys"] = self.tickets.getLastDayCoupon(restaurant["coupons"])
 
     # 傳送照片   
     def botSendPhoto(self,bot,couponImg,ID):
         for img in couponImg:
             bot.sendPhoto(ID,img)
 
-    #跑迴圈來發送給每一個訂閱者
+    # 跑迴圈來發送給每一個訂閱者
     def notify(self):
         print("NODIFY")
         bot = self.bot
-        KFC = self.data["stores"]["KFC"]
-        BK = self.data["stores"]["BK"]
         
-        for ID in KFC["subscribers"]:
-            if len(KFC["newKeys"]) != 0:
-                for key in KFC["newKeys"]:
-                    bot.sendMessage(ID,self.tickets.printCoupon(key,KFC["coupons"]))
-                    self.botSendPhoto(bot,KFC["coupons"][key]["img"],ID)
-        
-            if len(KFC["lastDayKeys"]) != 0:
-                for key in KFC["lastDayKeys"]:
-                    bot.sendMessage(ID,self.tickets.printLastDayCoupon(key,KFC["coupons"]))
-                    self.botSendPhoto(bot,KFC["coupons"][key]["img"],ID)
-        for ID in BK["subscribers"]:
-            if len(BK["newKeys"]) != 0:
-                for key in BK["newKeys"]:
-                    bot.sendMessage(ID,self.tickets.printCoupon(key,BK["coupons"]))
-                    self.botSendPhoto(bot,BK["coupons"][key]["img"],ID)
-                    if len(BK["lastDayKeys"]) != 0:
-                        for key in BK["lastDayKeys"]:
-                            bot.sendMessage(ID,self.tickets.printLastDayCoupon(key,BK["coupons"]))
-                            self.botSendPhoto(bot,BK["coupons"][key]["img"],ID)
+        for restaurant in self.data["stores"].values(): # 跑各個店家
+            for ID in restaurant["subscribers"]: # 跑各個訂閱者
+                if len(restaurant["newKeys"]) != 0: # 有新的coupon，傳送給訂閱者
+                    for key in restaurant["newKeys"]:
+                        bot.sendMessage(ID,self.tickets.printCoupon(key,restaurant["coupons"]))
+                        self.botSendPhoto(bot,restaurant["coupons"][key]["img"],ID)
+                if len(restaurant["lastDayKeys"]) != 0: 
+                    for key in restaurant["lastDayKeys"]: # 有即將到期的coupon，傳送給訂閱者 
+                        bot.sendMessage(ID,self.tickets.printCoupon(key,restaurant["coupons"]))
+                        self.botSendPhoto(bot,restaurant["coupons"][key]["img"],ID)
+
 
     # 執行update跟notify，處理完後把今天抓的資料放進oldData
     def execute(self):
-        stores = self.data["stores"]
-        stores["KFC"]["coupons"] = self.data["stores"]["KFC"]["spider"].get_coupons()
-        stores["BK"]["coupons"] = self.data["stores"]["BK"]["spider"].get_coupons()
+        print("run execute")
+        for restaurant,info in self.data["stores"].items(): # 爬一次當天的新資料
+            info["coupons"] = self.data["stores"][restaurant]["spider"].get_coupons()
         self.update()
         self.notify() 
-        self.data["stores"]["KFC"]["oldData"] = self.data["stores"]["KFC"]["coupons"]
-        self.data["stores"]["BK"]["oldData"] = self.data["stores"]["BK"]["coupons"]
-        #print("BK old data",self.data["stores"]["BK"]["oldData"])
+        for restaurant in self.data["stores"].values(): # 執行完 update 跟 notify 之後把當天新資料放入old data
+            restaurant["oldData"] = restaurant["coupons"]
         print("execute")
 
     def setup(self):
-        
-        stores = {"KFC":{"subscribers":["466175780","648984791"],
+        stores = {"肯德基":{"subscribers":[],
                 "spider":KFCSpider(),
                 "coupons":{},
                 "newKeys":[],
                 "lastDayKeys":[],
                 "oldData":{}},
-        "BK":{"subscribers":["466175780","648984791"],
+        "漢堡王":{"subscribers":[],
             "spider":BKSpider(),
+            "coupons":{},
+            "newKeys":[],
+            "lastDayKeys":[],
+            "oldData":{}},
+        "摩斯漢堡":{"subscribers":[],
+            "spider":MosSpider(),
+            "coupons":{},
+            "newKeys":[],
+            "lastDayKeys":[],
+            "oldData":{}},
+        "麥當勞":{"subscribers":[],
+            "spider":McDSpider(),
+            "coupons":{},
+            "newKeys":[],
+            "lastDayKeys":[],
+            "oldData":{}},
+        "21世紀":{"subscribers":[],
+            "spider":twentyOneCenturySpider(),
+            "coupons":{},
+            "newKeys":[],
+            "lastDayKeys":[],
+            "oldData":{}},
+        "頂呱呱":{"subscribers":[],
+            "spider":TKKSpider(),
             "coupons":{},
             "newKeys":[],
             "lastDayKeys":[],
             "oldData":{}}
         }
         self.data["stores"] = stores
-        
-        stores["KFC"]["coupons"] = self.data["stores"]["KFC"]["spider"].get_coupons()
-        stores["BK"]["coupons"] = self.data["stores"]["BK"]["spider"].get_coupons()
-        #print("BK old data",self.data["stores"]["BK"]["oldData"])
 
+        # note:測試時schedule設定的時間要在下面爬蟲都結束之後開始，否則會跟execute裡面的爬蟲衝突
+        '''
+        for restaurant,info in self.data["stores"].items(): # setup先抓一次資料
+            info["coupons"] = self.data["stores"][restaurant]["spider"].get_coupons()
+            print("restaurant",restaurant,info)
+        '''
         print("[CouponModule] setup")
-        schedule.every().day.at("16:40").do(self.execute)
-        #schedule.every(2).minutes.do(self.execute)
+        schedule.every().day.at("15:58").do(self.execute)
+        #schedule.every(10).minutes.do(self.execute)
                 
     def loop(self):
         bot = self.bot
