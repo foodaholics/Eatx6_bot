@@ -3,6 +3,8 @@
 import telepot
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton
 
+from modules.ticket import Ticket
+from modules.coupon_module import CouponModule
 from tasks.base_task import BaseTask
 
 class ViewCouponTask(BaseTask):
@@ -37,7 +39,7 @@ class ViewCouponTask(BaseTask):
             query_id, chat_id, query_data = telepot.glance(msg, flavor='callback_query')
 
         # TODO: 實作實際的功能
-        if users[chat_id]['status'] != '/coupon':
+        if 'text' in msg and msg['text'] in ['/coupon']:
             # 設定狀態
             users[chat_id]['status'] = '/coupon'
 
@@ -51,4 +53,13 @@ class ViewCouponTask(BaseTask):
 
             bot.sendMessage(chat_id, "我目前有這些餐廳的優惠券～你想看看哪一家的？", reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard))
         else:
-            bot.sendMessage(chat_id, "想看折價券齁？")
+            if len(self.data['stores'][query_data]['coupons']) != 0:
+                # 輸出優惠券
+                output = Ticket()
+                coupons = self.data['stores'][query_data]['coupons']
+                for name in coupons:
+                    for img in coupons[name]['img']:
+                        bot.sendPhoto(chat_id, img)
+                    bot.sendMessage(chat_id, name+"\n"+coupons[name]["desc"]+"\n"+"開始時間："+coupons[name]["startDate"]+"\n"+"結束時間："+coupons[name]["endDate"])
+            else:
+                bot.sendMessage(chat_id, "目前沒有任何優惠券哦～")
