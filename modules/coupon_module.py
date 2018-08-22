@@ -50,14 +50,13 @@ class CouponModule(BaseModule):
 
     # 執行update跟notify，處理完後把今天抓的資料放進oldData
     def execute(self):
-        print("run execute")
+        print("[CouponModule] execute")
         for restaurant,info in self.data["stores"].items(): # 爬一次當天的新資料
             info["coupons"] = self.data["stores"][restaurant]["spider"].get_coupons()
         self.update()
         self.notify() 
         for restaurant in self.data["stores"].values(): # 執行完 update 跟 notify 之後把當天新資料放入old data
             restaurant["oldData"] = restaurant["coupons"]
-        print("execute")
 
     def setup(self):
         stores = {"肯德基":{"subscribers":[],
@@ -108,6 +107,8 @@ class CouponModule(BaseModule):
         print("[CouponModule] setup")
         schedule.every().day.at("15:58").do(self.execute)
         #schedule.every(10).minutes.do(self.execute)
+
+        self.execute()
                 
     def loop(self):
         bot = self.bot
