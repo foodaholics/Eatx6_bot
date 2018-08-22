@@ -15,7 +15,7 @@ from tasks.restaurant_task import RestaurantTask
 from tasks.viewcoupon_task import ViewCouponTask
 from tasks.subscribe_task import SubscribeTask
 from modules.sample_module import SampleModule
-from modules.remind_module import RemindModule
+# from modules.remind_module import RemindModule
 from modules.coupon_module import CouponModule
 
 # 載入設定值
