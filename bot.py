@@ -8,12 +8,14 @@ from pprint import pprint
 import telepot
 from telepot.loop import MessageLoop
 
-from tasks.weather_task import WeatherTask
 from tasks.sample_task import SampleTask
+from tasks.remind_task import RemindTask
+from tasks.weather_task import WeatherTask
 from tasks.restaurant_task import RestaurantTask
 from tasks.viewcoupon_task import ViewCouponTask
 from tasks.subscribe_task import SubscribeTask
 from modules.sample_module import SampleModule
+from modules.remind_module import RemindModule
 from modules.coupon_module import CouponModule
 
 # 載入設定值
@@ -28,7 +30,7 @@ users = {}
 data = {}
 
 # 載入功能
-tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot, config['PLACE_KEY']), SubscribeTask(bot, data), ViewCouponTask(bot, data)]
+tasks = [SampleTask(bot), WeatherTask(bot), RestaurantTask(bot, config['PLACE_KEY']), SubscribeTask(bot, data), RemindTask(bot), ViewCouponTask(bot, data)]
 # 載入模組
 modules = [SampleModule(bot), CouponModule(bot,data)]
 
